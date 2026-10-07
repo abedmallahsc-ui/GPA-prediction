@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GPA Calculator</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-card">
+      <h1>GPA Calculator</h1>
+
+      <form id="gpaForm">
+        <div class="input-group">
+          <label for="courseCount">Number of courses</label>
+          <input id="courseCount" type="number" min="1" step="1" value="3" />
+        </div>
+
+        <button type="button" id="generateCourses" class="primary-btn">Generate Courses</button>
+
+        <div id="courseFields" class="course-fields"></div>
+
+        <button type="button" id="calculateBtn" class="primary-btn full-width">Calculate GPA</button>
+      </form>
+
+      <div id="resultBox" class="result-box" aria-live="polite">
+        <p class="result-label">Your GPA</p>
+        <h2 id="gpaResult">0.00</h2>
+      </div>
+    </div>
+
+    <script>
+      const courseCountInput = document.getElementById('courseCount');
+      const courseFields = document.getElementById('courseFields');
+      const generateBtn = document.getElementById('generateCourses');
+      const calculateBtn = document.getElementById('calculateBtn');
+      const gpaResult = document.getElementById('gpaResult');
+
+      function gradePoint(mark) {
+        if (mark >= 80) return 4.0;
+        if (mark >= 75) return 3.5;
+        if (mark >= 70) return 3.0;
+        if (mark >= 60) return 2.0;
+        if (mark >= 50) return 1.0;
+        return 0.0;
+      }
+
+      function renderCourseFields() {
+        const count = Math.max(1, parseInt(courseCountInput.value, 10) || 1);
+        courseFields.innerHTML = '';
+
+        for (let i = 1; i <= count; i++) {
+          const row = document.createElement('div');
+          row.className = 'course-row';
+          row.innerHTML = `
+            <h3>Course ${i}</h3>
+            <div class="course-inputs">
+              <div class="input-group small">
+                <label>Credit hours</label>
+                <input type="number" class="credit-input" min="1" step="1" value="3" />
+              </div>
+              <div class="input-group small">
+                <label>Marks</label>
+                <input type="number" class="mark-input" min="0" max="100" step="1" value="75" />
+              </div>
+            </div>
+          `;
+          courseFields.appendChild(row);
+        }
+      }
+
+      generateBtn.addEventListener('click', renderCourseFields);
+
+      calculateBtn.addEventListener('click', function () {
+        const rows = document.querySelectorAll('.course-row');
+        let totalCredits = 0;
+        let weightedTotal = 0;
+
+        rows.forEach((row) => {
+          const credit = parseFloat(row.querySelector('.credit-input').value) || 0;
+          const mark = parseFloat(row.querySelector('.mark-input').value) || 0;
+          const points = gradePoint(mark);
+
+          totalCredits += credit;
+          weightedTotal += credit * points;
+        });
+
+        if (totalCredits === 0) {
+          gpaResult.textContent = '0.00';
+          return;
+        }
+
+        const gpa = weightedTotal / totalCredits;
+        gpaResult.textContent = gpa.toFixed(2);
+      });
+
+      renderCourseFields();
+    </script>
+  </body>
+</html>
