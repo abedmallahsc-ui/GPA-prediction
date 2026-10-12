@@ -19,13 +19,13 @@ def main():
     def calculate_gpa(marks):
         for i in range(courses):
             marks = int(input(f"Enter marks for course {i + 1}: "))
-        if marks >= 80:
+        if marks >= 90:
             return 'A : 4.0'
-        elif marks >= 75:
+        elif marks >= 83:
             return 'B+ : 3.5'
-        elif marks >= 70:
+        elif marks >= 75:
             return 'B : 3.0'
-        elif marks >= 60:
+        elif marks >= 65:
             return 'C : 2.0'
         elif marks >= 50:
             return 'D : 1.0'
